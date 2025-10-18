@@ -1,5 +1,6 @@
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { LineChartStyled } from "./LineChart";
 import { Summary } from "./Summary";
 
 export function CompanyCard({
@@ -45,6 +46,8 @@ CompanyCard.Header = function Header({
 CompanyCard.Body = function Body() {
   return (
     <View style={styles.body}>
+      <LineChartStyled title="Revenue" />
+      {/* <ExampleTwo /> */}
       <Summary />
     </View>
   );
