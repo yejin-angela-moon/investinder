@@ -2,6 +2,8 @@ import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { LineChartStyled } from "./LineChart";
 import { Summary } from "./Summary";
+import { FinancialSummary } from "./FinancialSummary";
+import { getCompanyData } from "./CompanyData";
 
 export function CompanyCard({
   children,
@@ -43,38 +45,26 @@ CompanyCard.Header = function Header({
 };
 
 /* ---------------- Body ---------------- */
-CompanyCard.Body = function Body() {
+CompanyCard.Body = function Body({ companyID }: { companyID?: string }) {
+  const companyData = getCompanyData(companyID || "company_001");
+  
   return (
     <View style={styles.body}>
-      <LineChartStyled title="Revenue" />
-      {/* <ExampleTwo /> */}
-      <Summary />
+      <FinancialSummary 
+        data={companyData.financial} 
+        showDetailed={false} 
+        companyName={companyData.name}
+      />
+      <Summary companyID={companyID} />
     </View>
   );
 };
 
 /* ---------------- Footer ---------------- */
-CompanyCard.Footer = function Footer({
-  message,
-  likes,
-  onLike,
-}: {
-  message?: string;
-  likes: number;
-  onLike: () => void;
-}) {
+CompanyCard.Footer = function Footer() {
   return (
     <View style={styles.footer}>
-      <Pressable style={styles.likeBtn} onPress={onLike}>
-        <Text style={styles.likeEmoji}>❤️</Text>
-        <Text style={styles.likeCount}>{likes}</Text>
-      </Pressable>
-
-      <View style={styles.msg}>
-        <Text style={styles.msgLabel} numberOfLines={1} ellipsizeMode="tail">
-          {message || "Message to investor"}
-        </Text>
-      </View>
+      <Text style={styles.swipeHint}>Swipe right to add to watchlist</Text>
     </View>
   );
 };
@@ -118,28 +108,13 @@ const styles = StyleSheet.create({
 
   /* ----- Footer ----- */
   footer: {
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
+    justifyContent: "center",
+    paddingVertical: 12,
   },
-  likeBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 999,
-    backgroundColor: "#ffe7e6",
+  swipeHint: {
+    fontSize: 14,
+    color: "#6b7280",
+    fontStyle: "italic",
   },
-  likeEmoji: { fontSize: 16 },
-  likeCount: { fontSize: 14, fontWeight: "600", color: "#333" },
-  msg: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    backgroundColor: "#f1f1f1",
-  },
-  msgLabel: { fontSize: 14, color: "#333" },
 });

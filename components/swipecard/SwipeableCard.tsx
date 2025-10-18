@@ -57,28 +57,36 @@ export default function SwipeableCard({
         { useNativeDriver: false }
       ),
       onPanResponderRelease: (_evt, { dx, vy }) => {
+        console.log("SwipeableCard: Release detected - dx:", dx, "vy:", vy, "threshold:", swipeThreshold);
+        
         if (dx > swipeThreshold) {
+          console.log("SwipeableCard: Right swipe detected! dx:", dx, "> threshold:", swipeThreshold);
           // fling right
           Animated.spring(pan, {
             toValue: { x: outDistance, y: vy * 100 },
             useNativeDriver: true,
           }).start(() => {
+            console.log("SwipeableCard: Right swipe animation completed, calling onSwipeRight");
             onSwipeRight?.();
             pan.setValue({ x: 0, y: 0 }); // reset if you keep reusing the same view
           });
           return;
         }
         if (dx < -swipeThreshold) {
+          console.log("SwipeableCard: Left swipe detected! dx:", dx, "< -threshold:", -swipeThreshold);
           // fling left
           Animated.spring(pan, {
             toValue: { x: -outDistance, y: vy * 100 },
             useNativeDriver: true,
           }).start(() => {
+            console.log("SwipeableCard: Left swipe animation completed, calling onSwipeLeft");
             onSwipeLeft?.();
             pan.setValue({ x: 0, y: 0 });
           });
           return;
         }
+        
+        console.log("SwipeableCard: Swipe distance insufficient, snapping back. dx:", dx, "threshold:", swipeThreshold);
         // snap back
         Animated.spring(pan, {
           toValue: { x: 0, y: 0 },
